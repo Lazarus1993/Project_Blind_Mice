@@ -5,10 +5,15 @@ import { connect } from "react-redux";
 import { getCurrentProfile, deleteAccount } from "../../actions/profileActions";
 import Spinner from "../common/Spinner";
 import ProfileActions from "./ProfileActions";
+import { getRegisteredTrials } from "../../actions/trialActions";
+import TrialFeed from "../trials/TrialFeed";
+import TrialForm from "../trials/TrialForm";
+import Notifications, { notify } from "react-notify-toast";
 
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
+    this.props.getRegisteredTrials();
   }
 
   onDeleteClick(e) {
@@ -21,6 +26,20 @@ class Dashboard extends Component {
 
     let dashboardContent;
 
+    const { trials } = this.props.trial;
+    let trialContent;
+
+    if (trials === null || loading) {
+      trialContent = "No Trials Registered";
+    } else {
+      trialContent = (
+        <div>
+          <h2>Registered Trials:</h2>
+          <TrialFeed trials={trials} />
+        </div>
+      );
+    }
+
     if (profile === null || loading) {
       dashboardContent = <Spinner />;
     } else {
@@ -32,13 +51,16 @@ class Dashboard extends Component {
               Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
             </p>
             <ProfileActions />
-            <div style={{ marginBottom: "60px" }} />
-            <button
-              onClick={this.onDeleteClick.bind(this)}
-              className="btn btn-danger"
-            >
-              Delete My Account
-            </button>
+            {user.type === "Researcher" && <TrialForm />}
+            {user.type === "Participant" && <div>{trialContent}</div>}
+            <div>
+              <button
+                onClick={this.onDeleteClick.bind(this)}
+                className="btn btn-danger"
+              >
+                Delete My Account
+              </button>
+            </div>
           </div>
         );
       } else {
@@ -74,15 +96,17 @@ Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
   deleteAccount: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object.isRequired,
+  getRegisteredTrials: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   profile: state.profile,
-  auth: state.auth
+  auth: state.auth,
+  trial: state.trial
 });
 
 export default connect(
   mapStateToProps,
-  { getCurrentProfile, deleteAccount }
+  { getCurrentProfile, deleteAccount, getRegisteredTrials }
 )(Dashboard);

@@ -13,6 +13,7 @@ class Register extends Component {
       email: "",
       password: "",
       password2: "",
+      type: "",
       errors: {}
     };
 
@@ -43,7 +44,8 @@ class Register extends Component {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password,
-      password2: this.state.password2
+      password2: this.state.password2,
+      type: this.state.type
     };
 
     this.props.registerUser(newUser, this.props.history);
@@ -94,6 +96,15 @@ class Register extends Component {
                   onChange={this.onChange}
                   error={errors.password2}
                 />
+                <select
+                  className="form-control"
+                  name="type"
+                  onChange={this.onChange}
+                >
+                  <option value="">Select a Role</option>
+                  <option value="Participant">Participant</option>
+                  <option value="Researcher">Researcher</option>
+                </select>
                 <input type="submit" className="btn btn-info btn-block mt-4" />
               </form>
             </div>

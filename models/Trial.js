@@ -35,6 +35,9 @@ const TrialSchema = new Schema({
   inclusion: {
     age: {
       type: Number
+    },
+    gender: {
+      type: String
     }
   },
   date: {

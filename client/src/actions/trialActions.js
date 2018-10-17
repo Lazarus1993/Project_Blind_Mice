@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import {
   ADD_TRIAL,
   GET_ERRORS,
@@ -15,12 +14,7 @@ export const addTrial = trialData => dispatch => {
   dispatch(clearErrors());
   axios
     .post("/api/trials", trialData)
-    .then(res =>
-      dispatch({
-        type: ADD_TRIAL,
-        payload: res.data
-      })
-    )
+    .then(res => console.log(res.status))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -33,7 +27,26 @@ export const addTrial = trialData => dispatch => {
 export const getTrials = () => dispatch => {
   dispatch(setTrialLoading());
   axios
-    .get("/api/trials")
+    .get("/api/trials/filter")
+    .then(res =>
+      dispatch({
+        type: GET_TRIALS,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_TRIALS,
+        payload: null
+      })
+    );
+};
+
+// Get Registered Trials
+export const getRegisteredTrials = () => dispatch => {
+  dispatch(setTrialLoading());
+  axios
+    .get("/api/trials/registered")
     .then(res =>
       dispatch({
         type: GET_TRIALS,
